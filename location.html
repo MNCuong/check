@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lấy vị trí người dùng</title>
+  </head>
+  <body>
+    <h1>Xin phép lấy vị trí của bạn</h1>
+    <button id="getLocationBtn">Lấy vị trí</button>
+    <p id="status"></p>
+
+    <script>
+      const status = document.getElementById("status");
+      const btn = document.getElementById("getLocationBtn");
+
+      btn.onclick = () => {
+        if (!navigator.geolocation) {
+          status.textContent = "Trình duyệt không hỗ trợ Geolocation";
+          return;
+        }
+
+        status.textContent = "Đang lấy vị trí...";
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            status.textContent = `Vị trí của bạn: Lat ${latitude}, Lon ${longitude}`;
+
+            // Gửi vị trí về server
+            fetch("https://yourserver.com/api/location", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ latitude, longitude }),
+            })
+              .then((res) => {
+                if (res.ok) {
+                  status.textContent += " - Đã gửi vị trí về server";
+                } else {
+                  status.textContent += " - Gửi vị trí thất bại";
+                }
+              })
+              .catch((err) => {
+                status.textContent += " - Lỗi gửi dữ liệu: " + err;
+              });
+          },
+          (error) => {
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                status.textContent = "Bạn đã từ chối cấp quyền vị trí.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                status.textContent = "Không thể lấy vị trí hiện tại.";
+                break;
+              case error.TIMEOUT:
+                status.textContent = "Hết thời gian lấy vị trí.";
+                break;
+              default:
+                status.textContent = "Lỗi không xác định.";
+                break;
+            }
+          }
+        );
+      };
+    </script>
+  </body>
+</html>
