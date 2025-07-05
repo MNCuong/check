@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera Realtime</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        video {
+            width: 90%;
+            max-width: 700px;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Xem Camera Realtime</h2>
+    <video id="video" autoplay playsinline></video>
+
+    <script>
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById("video");
+                video.srcObject = stream;
+            } catch (e) {
+                alert("Không thể truy cập camera: " + e.message);
+            }
+        }
+
+        startCamera();
+    </script>
+</body>
+</html>
