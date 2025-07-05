@@ -1,9 +1,10 @@
 services:
   - type: web
-    name: spring-boot-app
+    name: springboot-basic-app
     env: java
-    buildCommand: "./mvnw clean install -DskipTests"
+    plan: free
+    buildCommand: "./mvnw clean package -DskipTests"
     startCommand: "java -jar target/check-0.0.1-SNAPSHOT.jar"
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
+      - key: PORT
+        value: 8080
